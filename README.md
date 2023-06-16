@@ -1,1 +1,1 @@
-# odin-book-api
+The API which will be used on the front end of my Odin-Book project.
