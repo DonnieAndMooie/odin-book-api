@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 exports.login = [
@@ -15,17 +15,31 @@ exports.login = [
     .escape()
     .withMessage("Password must be a least 6 characters"),
 
-  (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (errors.array().length > 0) {
       return res.json(errors.array());
     }
+    const user = await User.findOne({ email: req.body.email });
 
-    next();
-  },
-  passport.authenticate("local"),
-  (req, res) => {
-    res.json(req.user);
+    if (!user) {
+      return res.status(404).json({ message: "Could not find user" });
+    }
+
+    bcrypt.compare(req.body.password, user.password, (err, resolved) => {
+      if (resolved) {
+        const opts = {};
+        opts.expiresIn = "24h";
+        const secret = process.env.SECRET;
+        const token = jwt.sign({ email: user.email }, secret, opts);
+        return res.status(200).json({
+          message: "Auth passed",
+          token,
+          userId: user._id,
+        });
+      }
+      res.status(401).json({ message: "Incorrect Password" });
+    });
   },
 ];
 
