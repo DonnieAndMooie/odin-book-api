@@ -5,10 +5,15 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const passport = require("passport");
+const session = require("express-session");
+const localStrategy = require("./LocalStrategy");
 
 const indexRouter = require("./routes/index");
 
 const app = express();
+
+passport.use(localStrategy);
 
 mongoose.connect(process.env.DATABASE_URL);
 
@@ -17,6 +22,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/", indexRouter);
 
@@ -33,7 +42,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({ message: "An error occurred", err: err.message });
 });
 
 module.exports = app;
