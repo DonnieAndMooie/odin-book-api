@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 const User = require("../models/User");
 
 exports.login = [
@@ -87,6 +88,9 @@ exports.sign_up = [
   },
 ];
 
-exports.login_facebook = (req, res) => {
-
-};
+exports.login_facebook = [
+  passport.authenticate("facebook-token"),
+  function (req, res) {
+    res.json(req.user);
+  },
+];

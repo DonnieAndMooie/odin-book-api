@@ -8,8 +8,8 @@ require("dotenv").config();
 const passport = require("passport");
 const cors = require("cors");
 const jwtStrategy = require("./jwtStrategy");
-
 const indexRouter = require("./routes/index");
+const FacebookStrategy = require("./FacebookStrategy");
 
 mongoose.connect(process.env.DATABASE_URL);
 
@@ -18,6 +18,7 @@ const app = express();
 app.use(cors());
 app.use(passport.initialize());
 passport.use(jwtStrategy);
+passport.use(FacebookStrategy);
 
 app.use(logger("dev"));
 app.use(express.json());
