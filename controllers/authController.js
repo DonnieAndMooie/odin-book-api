@@ -89,7 +89,7 @@ exports.sign_up = [
 ];
 
 exports.login_facebook = [
-  passport.authenticate("facebook-token"),
+  passport.authenticate("facebook-token", { session: false }),
   function (req, res) {
     res.json(req.user);
   },
