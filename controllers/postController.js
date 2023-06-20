@@ -1,3 +1,4 @@
+const { body, validationResult } = require("express-validator");
 const Post = require("../models/Post");
 
 exports.post_get = async (req, res) => {
@@ -18,21 +19,28 @@ exports.posts_get = async (req, res) => {
   }
 };
 
-exports.post_post = async (req, res) => {
-  try {
-    const post = new Post({
-      text: req.body.text,
-      picture: req.body.picture,
-      likes: [],
-      timestamp: Date.now(),
-      author: req.user._id,
-    });
-    await post.save();
-    res.json(post);
-  } catch (err) {
-    res.json({ message: "There was an error when posting" });
-  }
-};
+exports.post_post = [
+  body("text")
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Text must be at least 3 characters"),
+
+  async (req, res) => {
+    try {
+      const post = new Post({
+        text: req.body.text,
+        picture: req.body.picture,
+        likes: [],
+        timestamp: Date.now(),
+        author: req.user._id,
+      });
+      await post.save();
+      res.json(post);
+    } catch (err) {
+      res.json({ message: "There was an error when posting" });
+    }
+  },
+];
 
 exports.post_delete = async (req, res) => {
   try {

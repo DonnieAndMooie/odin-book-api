@@ -7,7 +7,7 @@ const PostSchema = new Schema({
   picture: { type: Buffer },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   timestamp: { type: Date, required: true, default: Date.now() },
-  author: { type: Schema.Types.ObjectId, required: true },
+  author: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 module.exports = mongoose.model("Post", PostSchema);
