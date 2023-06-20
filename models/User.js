@@ -9,6 +9,8 @@ const UserSchema = new Schema({
   password: { type: String },
   picture: { type: Buffer },
   facebookId: { type: String },
+  requests_received: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  requests_sent: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 module.exports = mongoose.model("User", UserSchema);

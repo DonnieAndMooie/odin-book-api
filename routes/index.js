@@ -6,6 +6,7 @@ const authController = require("../controllers/authController");
 const commentController = require("../controllers/commentController");
 const postController = require("../controllers/postController");
 const userController = require("../controllers/userController");
+const friendController = require("../controllers/friendController");
 
 router.post("/sign-up", authController.sign_up);
 
@@ -38,5 +39,13 @@ router.get("/users", passport.authenticate("jwt", { session: false }), userContr
 router.get("/users/:userId", passport.authenticate("jwt", { session: false }), userController.user_get);
 
 router.put("/users/:userId", passport.authenticate("jwt", { session: false }), userController.user_update);
+
+router.post("/friend-request/:userId", passport.authenticate("jwt", { session: false }), friendController.friend_request);
+
+router.post("/friend-request-accept/:userId", passport.authenticate("jwt", { session: false }), friendController.accept_request);
+
+router.post("/unfriend/:userId", passport.authenticate("jwt", { session: false }), friendController.unfriend);
+
+router.post("/friend-request-reject/:userId", passport.authenticate("jwt", { session: false }), friendController.reject_request);
 
 module.exports = router;
