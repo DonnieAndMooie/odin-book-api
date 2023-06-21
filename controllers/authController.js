@@ -49,7 +49,7 @@ exports.sign_up = [
     .trim()
     .isEmail()
     .escape()
-    .withMessage("Please enter a valiid email"),
+    .withMessage("Please enter a valid email"),
   body("password")
     .trim()
     .isLength({ min: 6 })
