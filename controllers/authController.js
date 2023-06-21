@@ -91,6 +91,10 @@ exports.sign_up = [
 exports.login_facebook = [
   passport.authenticate("facebook-token", { session: false }),
   function (req, res) {
-    res.json(req.user);
+    const opts = {};
+    opts.expiresIn = "24h";
+    const secret = process.env.SECRET;
+    const token = jwt.sign({ email: req.user.email }, secret, opts);
+    res.json({ token, user: req.user });
   },
 ];
