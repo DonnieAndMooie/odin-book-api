@@ -12,7 +12,7 @@ exports.post_get = async (req, res) => {
 
 exports.posts_get = async (req, res) => {
   try {
-    const posts = await Post.find({}).populate("author");
+    const posts = await Post.find({}).populate("author").sort({ timestamp: -1 });
     res.json(posts);
   } catch (err) {
     res.json({ message: "Could not find any posts" });
@@ -40,7 +40,8 @@ exports.post_post = [
         author: req.user._id,
       });
       await post.save();
-      res.json(post);
+      const postPopulated = await post.populate("author");
+      res.json(postPopulated);
     } catch (err) {
       res.json({ message: "There was an error when posting" });
     }
