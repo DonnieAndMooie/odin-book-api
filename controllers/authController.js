@@ -36,7 +36,7 @@ exports.login = [
         return res.status(200).json({
           message: "Auth passed",
           token,
-          userId: user._id,
+          user,
         });
       }
       res.status(401).json({ message: "Incorrect Password" });
