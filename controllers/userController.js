@@ -22,6 +22,7 @@ exports.user_update = async (req, res) => {
   const changes = {
     friends: req.body.friends,
     picture: req.body.picture,
+    bio: req.body.bio,
   };
   try {
     const updatedResult = await User.findByIdAndUpdate(req.params.userId, changes, { new: true });

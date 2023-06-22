@@ -11,6 +11,7 @@ const UserSchema = new Schema({
   facebookId: { type: String },
   requests_received: [{ type: Schema.Types.ObjectId, ref: "User" }],
   requests_sent: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  bio: { type: String, default: "I'm new to OdinBook!" },
 });
 
 module.exports = mongoose.model("User", UserSchema);
