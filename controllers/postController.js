@@ -3,7 +3,7 @@ const Post = require("../models/Post");
 
 exports.post_get = async (req, res) => {
   try {
-    const post = Post.findById(req.params.postId);
+    const post = Post.findById(req.params.postId).populate("author");
     res.json(post);
   } catch (err) {
     res.json({ message: `Could not find post with ID ${req.params.postId}` });
@@ -12,7 +12,7 @@ exports.post_get = async (req, res) => {
 
 exports.posts_get = async (req, res) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).populate("author");
     res.json(posts);
   } catch (err) {
     res.json({ message: "Could not find any posts" });
@@ -26,6 +26,11 @@ exports.post_post = [
     .withMessage("Text must be at least 3 characters"),
 
   async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.array().length > 0) {
+      return res.json(errors.array());
+    }
+
     try {
       const post = new Post({
         text: req.body.text,
