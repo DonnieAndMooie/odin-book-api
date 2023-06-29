@@ -62,7 +62,7 @@ async function createComment() {
       likes: [],
       timestamp: faker.date.past(),
       post: Posts[random]._id,
-      author: Posts[random2]._id,
+      author: Users[random2]._id,
     });
     await newComment.save();
     console.log(newComment);
@@ -71,6 +71,34 @@ async function createComment() {
   }
 }
 
+// for (let i = 0; i < 20; i++) {
+//   createComment();
+// }
+
+async function makeFriends() {
+  const Users = await User.find({});
+  const randomNum = Math.floor(Math.random() * Users.length);
+  const randomNum2 = Math.floor(Math.random() * Users.length);
+  if (randomNum === randomNum2) {
+    return;
+  }
+  const user1 = Users[randomNum];
+  const user2 = Users[randomNum2];
+
+  if (user1.friends.includes(user2._id.toString())) {
+    return;
+  }
+
+  user1.friends.push(user2);
+  user2.friends.push(user1);
+
+  await user1.save();
+  await user2.save();
+
+  console.log(user1);
+  console.log(user2);
+}
+
 for (let i = 0; i < 20; i++) {
-  createComment();
+  makeFriends();
 }

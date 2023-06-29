@@ -48,4 +48,8 @@ router.post("/unfriend/:userId", passport.authenticate("jwt", { session: false }
 
 router.post("/friend-request-reject/:userId", passport.authenticate("jwt", { session: false }), friendController.reject_request);
 
+router.get("/timeline", passport.authenticate("jwt", { session: false }), postController.timeline);
+
+router.get("/other-posts", passport.authenticate("jwt", { session: false }), postController.other_posts);
+
 module.exports = router;

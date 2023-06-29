@@ -3,7 +3,7 @@ const Comment = require("../models/Comment");
 
 exports.comments_get = async (req, res) => {
   try {
-    const comment = await Comment.find({ post: req.params.postId });
+    const comment = await Comment.find({ post: req.params.postId }).populate("author");
     res.json(comment);
   } catch (err) {
     res.json({ message: `Cannot find any comments on post with ID ${req.params.postId}` });
@@ -12,7 +12,7 @@ exports.comments_get = async (req, res) => {
 
 exports.comment_get = async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.commentId);
+    const comment = await Comment.findById(req.params.commentId).populate("author");
     res.json(comment);
   } catch (err) {
     res.json({ message: `Could not find comment with ID ${req.params.commentId}` });

@@ -3,7 +3,7 @@ const Post = require("../models/Post");
 
 exports.post_get = async (req, res) => {
   try {
-    const post = Post.findById(req.params.postId).populate("author");
+    const post = await Post.findById(req.params.postId).populate("author");
     res.json(post);
   } catch (err) {
     res.json({ message: `Could not find post with ID ${req.params.postId}` });
@@ -66,5 +66,29 @@ exports.post_update = async (req, res) => {
     res.json(updatedResult);
   } catch (err) {
     res.json({ message: `Cannot update post with the ID ${req.params.postId}` });
+  }
+};
+
+exports.timeline = async (req, res) => {
+  try {
+    const array = [...req.user.friends, req.user._id];
+    const posts = await Post.find({
+      author: { $in: array },
+    }).populate("author").sort({ timestamp: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.json({ message: "Could not find any posts" });
+  }
+};
+
+exports.other_posts = async (req, res) => {
+  try {
+    const array = [...req.user.friends, req.user._id];
+    const posts = await Post.find({
+      author: { $nin: array },
+    }).populate("author").sort({ timestamp: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.json({ message: "Could not find any posts" });
   }
 };
