@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const PostSchema = new Schema({
   text: { type: String },
-  picture: { type: Buffer },
+  picture: { type: String },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   timestamp: { type: Date, required: true, default: Date.now() },
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },
