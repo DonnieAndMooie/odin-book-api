@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const Comment = require("../models/Comment");
 
 exports.comments_get = async (req, res) => {
+  // Return all comments on post
   try {
     const comment = await Comment.find({ post: req.params.postId }).populate("author");
     res.json(comment);
@@ -11,6 +12,7 @@ exports.comments_get = async (req, res) => {
 };
 
 exports.comment_get = async (req, res) => {
+  // Return specific comment on post
   try {
     const comment = await Comment.findById(req.params.commentId).populate("author");
     res.json(comment);
@@ -20,17 +22,20 @@ exports.comment_get = async (req, res) => {
 };
 
 exports.comment_post = [
+  // Validate comment length
   body("text")
     .trim()
     .isLength({ min: 3 })
     .withMessage("Comment must be at least 3 characters"),
 
   async (req, res) => {
+    // Return any errors
     const errors = validationResult(req);
     if (errors.array().length > 0) {
       return res.json(errors.array());
     }
     try {
+      // Save comment to DB
       const comment = new Comment({
         text: req.body.text,
         likes: [],
@@ -48,6 +53,7 @@ exports.comment_post = [
 
 exports.comment_delete = async (req, res) => {
   try {
+    // Delete specific commnent from DB
     const deletedPost = await Comment.findByIdAndDelete(req.params.commentId);
     res.json(deletedPost);
   } catch (err) {
@@ -57,6 +63,7 @@ exports.comment_delete = async (req, res) => {
 
 exports.comment_update = async (req, res) => {
   try {
+    // Update likes on comment
     const changes = {
       likes: req.body.likes,
     };

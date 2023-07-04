@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../models/Post");
 
 exports.post_get = async (req, res) => {
+  // Get specific post
   try {
     const post = await Post.findById(req.params.postId).populate("author");
     res.json(post);
@@ -11,6 +12,7 @@ exports.post_get = async (req, res) => {
 };
 
 exports.posts_get = async (req, res) => {
+  // Get all posts
   try {
     const posts = await Post.find({}).populate("author").sort({ timestamp: -1 });
     res.json(posts);
@@ -20,18 +22,21 @@ exports.posts_get = async (req, res) => {
 };
 
 exports.post_post = [
+  // Validate post length
   body("text")
     .trim()
     .isLength({ min: 3 })
     .withMessage("Text must be at least 3 characters"),
 
   async (req, res) => {
+    // Return any errors
     const errors = validationResult(req);
     if (errors.array().length > 0) {
       return res.json(errors.array());
     }
 
     try {
+      // Save post to DB
       const post = new Post({
         text: req.body.text,
         picture: req.body.picture,
@@ -49,6 +54,7 @@ exports.post_post = [
 ];
 
 exports.post_delete = async (req, res) => {
+  // Delete specific post from DB
   try {
     const deletedPost = await Post.findByIdAndDelete(req.params.postId);
     res.json(deletedPost);
@@ -59,6 +65,7 @@ exports.post_delete = async (req, res) => {
 
 exports.post_update = async (req, res) => {
   try {
+    // Update likes on post
     const changes = {
       likes: req.body.likes,
     };
@@ -70,6 +77,7 @@ exports.post_update = async (req, res) => {
 };
 
 exports.timeline = async (req, res) => {
+  // Return only posts from friends sorted by timestamp
   try {
     const array = [...req.user.friends, req.user._id];
     const posts = await Post.find({
@@ -82,6 +90,7 @@ exports.timeline = async (req, res) => {
 };
 
 exports.other_posts = async (req, res) => {
+  // Return all posts not from friends sorted by timestamp
   try {
     const array = [...req.user.friends, req.user._id];
     const posts = await Post.find({

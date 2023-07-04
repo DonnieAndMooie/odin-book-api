@@ -7,6 +7,8 @@ const Comment = require("./models/Comment");
 
 mongoose.connect(process.env.DATABASE_URL);
 
+// This file is used to populate the database with fake data
+
 async function createNewUser() {
   try {
     const newUser = new User({

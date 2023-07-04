@@ -5,6 +5,7 @@ const passport = require("passport");
 const User = require("../models/User");
 
 exports.login = [
+  // Validate email and password
   body("email")
     .trim()
     .isEmail()
@@ -17,16 +18,20 @@ exports.login = [
     .withMessage("Password must be a least 6 characters"),
 
   async (req, res) => {
+    // Return any errors
     const errors = validationResult(req);
     if (errors.array().length > 0) {
       return res.json(errors.array());
     }
+
+    // Find user in database
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
       return res.status(404).json({ message: "Could not find user" });
     }
 
+    // Compare passwords and return token
     bcrypt.compare(req.body.password, user.password, (err, resolved) => {
       if (resolved) {
         const opts = {};
@@ -45,6 +50,7 @@ exports.login = [
 ];
 
 exports.sign_up = [
+  // Validatre user information
   body("email")
     .trim()
     .isEmail()
@@ -63,6 +69,8 @@ exports.sign_up = [
 
   (req, res, next) => {
     const errors = validationResult(req);
+
+    // Return any errors
     if (errors.array().length > 0) {
       return res.json(errors.array());
     }
@@ -71,6 +79,7 @@ exports.sign_up = [
   },
 
   async (req, res) => {
+    // Save user with hashed password
     bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
       try {
         const user = new User({
@@ -89,6 +98,7 @@ exports.sign_up = [
 ];
 
 exports.login_facebook = [
+  // Authenticate with facebbok and return token for OdinBook
   passport.authenticate("facebook-token", { session: false }),
   function (req, res) {
     const opts = {};

@@ -2,6 +2,7 @@ const User = require("../models/User");
 
 exports.friend_request = async (req, res) => {
   try {
+    // Send friend request to another user
     const requestedFriend = await User.findById(req.params.userId);
     requestedFriend.requests_received.push(req.user._id);
     await requestedFriend.save();
@@ -14,6 +15,7 @@ exports.friend_request = async (req, res) => {
 };
 
 exports.accept_request = async (req, res) => {
+  // Accept a request sent from another user
   try {
     const [acceptedFriend, user] = await Promise.all([
       User.findById(req.params.userId),
@@ -32,6 +34,7 @@ exports.accept_request = async (req, res) => {
 };
 
 exports.unfriend = async (req, res) => {
+  // Remove friend
   try {
     const [friend, user] = await Promise.all([
       User.findById(req.params.userId),
@@ -48,6 +51,7 @@ exports.unfriend = async (req, res) => {
 };
 
 exports.reject_request = async (req, res) => {
+  // Reject a request from another user
   try {
     const [requester, user] = await Promise.all([
       User.findById(req.params.userId),

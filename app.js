@@ -11,12 +11,14 @@ const jwtStrategy = require("./jwtStrategy");
 const indexRouter = require("./routes/index");
 const FacebookStrategy = require("./FacebookStrategy");
 
+// Connect to DB
 mongoose.connect(process.env.DATABASE_URL);
 
 const app = express();
 
 app.use(cors());
 app.use(passport.initialize());
+// Use both email/password strategy and facebook login
 passport.use(jwtStrategy);
 passport.use(FacebookStrategy);
 

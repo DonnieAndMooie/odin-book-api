@@ -1,6 +1,7 @@
 const User = require("../models/User");
 
 exports.users_get = async (req, res) => {
+  // Get all users
   const users = await User.find({});
   if (users) {
     res.json(users);
@@ -11,6 +12,7 @@ exports.users_get = async (req, res) => {
 
 exports.user_get = async (req, res) => {
   try {
+    // Get specific user
     const user = await User.findById(req.params.userId);
     res.json(user);
   } catch (err) {
@@ -19,6 +21,7 @@ exports.user_get = async (req, res) => {
 };
 
 exports.user_update = async (req, res) => {
+  // Update a user in DB
   const changes = {
     friends: req.body.friends,
     picture: req.body.picture,
